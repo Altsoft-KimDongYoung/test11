@@ -7,7 +7,6 @@ import {
   type UseQueryOptions,
 } from '@tanstack/react-query';
 
-import useIntersectionObserver from '@/ondaji/hooks/useIntersectionObserver';
 import type { ApiResponse } from '@/ondaji/types/common';
 import type {
   ApprovedSignageDevice,
@@ -131,13 +130,15 @@ export const useInfiniteQueryApprovedSignageDevices = <T = ApprovedSignageDevice
 
   const { hasNextPage, fetchNextPage } = query;
 
-  const lastItemRef = useIntersectionObserver<HTMLLIElement>({
-    fetchNextPage,
-    hasNextPage,
-    intersectionOptions: {
-      rootMargin: '120px',
-    },
-  });
+  // const lastItemRef = useIntersectionObserver<HTMLLIElement>({
+  //   fetchNextPage,
+  //   hasNextPage,
+  //   intersectionOptions: {
+  //     rootMargin: '120px',
+  //   },
+  // });
+
+  const lastItemRef = {};
 
   return {
     data: query.data,
