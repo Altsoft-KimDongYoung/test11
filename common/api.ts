@@ -1,11 +1,10 @@
+import { Post } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   LogoutBody,
   RenewRefreshTokenBody,
   RenewRefreshTokenResponse,
 } from '@/ondaji/types/common';
-
-import { Post } from './method';
 
 /** @Common 토큰 재발급  */
 export const postRenewRefreshToken = async (body: RenewRefreshTokenBody) => {

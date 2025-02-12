@@ -1,3 +1,4 @@
+import { Delete, Fetch, Post } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import { Pagenation } from '@/ondaji/types/common';
 import {
@@ -5,8 +6,6 @@ import {
   PaymentHistoryResponse,
   PaymentInfoBody,
 } from '@/ondaji/types/domain/my/payment/payment';
-
-import { Delete, Fetch, Post } from '../../../common/method';
 
 /** @PAYMENT 카드 정보 등록 */
 export const postPaymentInfo = async (body: PaymentInfoBody) => {

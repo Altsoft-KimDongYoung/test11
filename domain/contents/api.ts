@@ -1,3 +1,4 @@
+import { Delete, Fetch, Patch, Post, Put } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import { Pagenation } from '@/ondaji/types/common';
 import {
@@ -22,8 +23,6 @@ import {
   SetYnBody,
   SubContentPostingCountResponse,
 } from '@/ondaji/types/domain';
-
-import { Delete, Fetch, Patch, Post, Put } from '../../common/method';
 
 /** @CONTENT 콘텐츠에 들어가는 대표이미지 등록 api */
 export const postContentFile = async (body: FormData) => {

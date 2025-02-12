@@ -1,3 +1,4 @@
+import { Post, Put } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   ConfirmMailCodeForResetPasswordBody,
@@ -6,8 +7,6 @@ import {
   SendMailResetPasswordBody,
   SendSMSResetPasswordBody,
 } from '@/ondaji/types/domain';
-
-import { Post, Put } from '../../../common/method';
 
 /**
  * @AUTH [비밀번호 찾기] - SMS 인증번호 전송

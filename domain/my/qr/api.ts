@@ -1,3 +1,4 @@
+import { Delete, Fetch, Post } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   CertifyType,
@@ -10,8 +11,6 @@ import {
   QRCertifyJuminRequestBody,
   QRManageCertifyImageResponse,
 } from '@/ondaji/types/domain';
-
-import { Delete, Fetch, Post } from '../../../common/method';
 
 /** @MY QR 주민 인증 관리타입 조회 */
 export const fetchManagementCertifyType = async () => {

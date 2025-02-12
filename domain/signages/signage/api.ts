@@ -1,3 +1,4 @@
+import { Delete, Fetch, Patch, Post, Put } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   ApplyPayGroupBody,
@@ -32,8 +33,6 @@ import {
   WillPayGroupDetailParams,
   WillPayGroupDetailResponse,
 } from '@/ondaji/types/domain';
-
-import { Delete, Fetch, Patch, Post, Put } from '../../../common/method';
 
 /** @SIGNAGE 사이니지 기기등록시 선택할 수 있는 디바이스의 정보를 가져오는 API */
 export const fetchSignageDeviceSpec = async () => {

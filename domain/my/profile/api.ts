@@ -1,3 +1,4 @@
+import { Fetch, Patch, Post, Put } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   ApartmentMemberProfileDTO,
@@ -13,8 +14,6 @@ import {
   SendSMSChangeMobileBody,
 } from '@/ondaji/types/domain';
 import { convertURLtoFile } from '@/ondaji/utils/convertURLtoFile';
-
-import { Fetch, Patch, Post, Put } from '../../../common/method';
 
 /** @MY 마이 페이지 */
 export const fetchMyPage = async () => {

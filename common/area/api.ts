@@ -1,11 +1,10 @@
+import { Fetch } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   AreaPointMyTownParams,
   AreaPointMyTownResponse,
   OrganizationMyTownParams,
 } from '@/ondaji/types/common';
-
-import { Fetch } from '../method';
 
 /** @Common 내 동네 영역 조회(Point) */
 export const fetchAreaPointMyTown = async (params: AreaPointMyTownParams) => {

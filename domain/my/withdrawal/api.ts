@@ -1,7 +1,6 @@
+import { Delete, Fetch } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import { WithdrawalBody, WithdrawalResponse } from '@/ondaji/types/domain';
-
-import { Delete, Fetch } from '../../../common/method';
 
 /** @MY 회원탈퇴 */
 export const deleteUserWithdrawal = async (body: WithdrawalBody) => {

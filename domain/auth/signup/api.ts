@@ -1,3 +1,4 @@
+import { Fetch, Post } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   ApartmentContent,
@@ -17,8 +18,6 @@ import {
   SendJoinMobileBody,
   UserCheckDuplicateLoginIdParams,
 } from '@/ondaji/types/domain/auth';
-
-import { Fetch, Post } from '../../../common/method';
 
 /**
  * @AUTH 회원가입용 SMS 전송

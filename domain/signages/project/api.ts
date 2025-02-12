@@ -1,3 +1,4 @@
+import { Delete, Fetch, Post, Put } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   ContentListCanRegisterParams,
@@ -16,8 +17,6 @@ import {
   RegisterProjectRequestBody,
   SignageContentInfo,
 } from '@/ondaji/types/domain/signages/project';
-
-import { Delete, Fetch, Post, Put } from '../../../common/method';
 
 /** @SIGNAGE 사이니지 프로젝트 목록 데이터를 가져오는 API */
 export const fetchProjectList = async (params: ProjectListParams) => {

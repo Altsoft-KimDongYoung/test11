@@ -1,7 +1,6 @@
+import { Post, Put } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import { ContentRegisterResponse } from '@/ondaji/types/domain';
-
-import { Post, Put } from '../../../common/method';
 
 /** @CONTENT 광고 콘텐츠(모바일) 등록 api */
 export const postContentAd = async (body: FormData) => {

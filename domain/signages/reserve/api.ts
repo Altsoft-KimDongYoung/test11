@@ -1,3 +1,4 @@
+import { Delete, Fetch, Post, Put } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   EditReserveRequestBody,
@@ -10,8 +11,6 @@ import {
   ReservationListParams,
   ReserveDetailParams,
 } from '@/ondaji/types/domain';
-
-import { Delete, Fetch, Post, Put } from '../../../common/method';
 
 /** @SIGNAGE 사이니지 프로젝트를 등록하는 API */
 export const postRegisterReserve = async (body: RegisterReserveRequestBody) => {

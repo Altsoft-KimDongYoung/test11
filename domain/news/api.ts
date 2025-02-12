@@ -1,3 +1,4 @@
+import { Fetch } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import { Pagenation } from '@/ondaji/types/common';
 import {
@@ -10,8 +11,6 @@ import {
   NotificationDetailParams,
   SubscriptionContentDTO,
 } from '@/ondaji/types/domain';
-
-import { Fetch } from '../../common/method';
 
 /** @NEWS 알림 조회 */
 export const fetchNotification = async (params: Pagenation) => {

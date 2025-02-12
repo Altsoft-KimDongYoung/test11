@@ -1,3 +1,4 @@
+import { Delete, Fetch, Patch, Post } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import { AdministrativeDistrictPercentage } from '@/ondaji/types/common';
 import {
@@ -21,8 +22,6 @@ import {
   VisitTownDTO,
 } from '@/ondaji/types/domain';
 import { convertURLtoFile } from '@/ondaji/utils/convertURLtoFile';
-
-import { Delete, Fetch, Patch, Post } from '../../common/method';
 
 /** ❌ 제거 예정 */
 export const postLocalboxSubscription = async (body: SubscribeBody) => {

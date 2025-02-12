@@ -1,3 +1,4 @@
+import { Fetch, Post, Put } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   ChildOrganizationDto,
@@ -6,8 +7,6 @@ import {
   ContentListResponse,
   ContentRegisterResponse,
 } from '@/ondaji/types/domain';
-
-import { Fetch, Post, Put } from '../../../common/method';
 
 /** @CONTENT 주민소식 목록 조회 api */
 export const fetchContentMainResident = async (params?: ContentListParams) => {

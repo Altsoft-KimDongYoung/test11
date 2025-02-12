@@ -1,3 +1,4 @@
+import { Fetch, Post, Put } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   ComplainCanContentLocalityResponse,
@@ -9,8 +10,6 @@ import {
   ContentRegisterResponse,
   VillageNewsPutResponse,
 } from '@/ondaji/types/domain';
-
-import { Fetch, Post, Put } from '../../../common/method';
 
 // 🔥 공통으로 옮겨야 하나?
 /** @CONTENT 로컬박스 동네 영역 조회 api */

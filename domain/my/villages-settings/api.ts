@@ -1,7 +1,6 @@
+import { Patch } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import { PatchUserLocationBody } from '@/ondaji/types/domain';
-
-import { Patch } from '../../../common/method';
 
 /** @MY 동네 설정 하는 API */
 export const patchUserLocation = async (body: PatchUserLocationBody) => {

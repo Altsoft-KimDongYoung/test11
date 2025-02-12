@@ -1,3 +1,4 @@
+import { Post } from '@/internal/method';
 import { API_URL } from '@/ondaji/constants/apiUrl';
 import {
   FindLoginIdResponse,
@@ -6,8 +7,6 @@ import {
   SendMailForFindLoginIdBody,
   SendSMSForFindLoginIdBody,
 } from '@/ondaji/types/domain';
-
-import { Post } from '../../../common/method';
 
 /** @AUTH 아이디 찾기, SMS 인증번호 전송 API  */
 export const postSendSMSForFindLoginId = async (body: SendSMSForFindLoginIdBody) => {
