@@ -7,6 +7,7 @@ on:
     paths:
       - "src/constants/ondaji/**"
 
+# PR 생성 작업을 할 수 있도록 쓰기 작업을 허용합니다.
 permissions:
   contents: write
 
@@ -18,20 +19,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # 전체 커밋 이력을 가져옵니다.
-          token: ${{ secrets.ACCESS_TOKEN }} # PAT 사용
+          fetch-depth: 0 # 전체 커밋 기록과 함께 체크아웃
+          token: ${{ secrets.ACCESS_TOKEN }} # Personal Access Token 사용
 
       - name: Set up Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      # 공통 모듈 리모트가 없으면 추가
       - name: Add ondaji-constants remote if not exists
         run: |
           if ! git remote | grep -q ondaji-constants; then
             git remote add ondaji-constants https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/altsoft5472344/ondaji_4gen_front_constants.git
           fi
 
+      # 변경된 파일이 있는지 확인 check_changes.outputs.changes 변수에 저장
       - name: Check for changes in ondaji-constants
         id: check_changes
         run: |
@@ -54,28 +57,25 @@ jobs:
           # origin의 최신 main 브랜치를 업데이트 및 체크아웃
           git fetch origin main
           git checkout -B main origin/main
-          git log --oneline
 
           # 고유한 로컬 브랜치 이름 생성 (예: auto-ondaji-constants-타임스탬프)
           LOCAL_BRANCH="auto-ondaji-constants-$(date +%s)"
           echo "Creating local branch: $LOCAL_BRANCH"
           git checkout -b $LOCAL_BRANCH
 
-          echo "콘솔 1: subtree split 시작"
-          # 지정한 폴더에 대한 subtree split을 수행하여 임시 브랜치 생성 (고유한 이름 사용)
+          # git subtree split 명령어를 사용하여 공통모듈 디렉토리의 커밋 내역만 분리해 별도의 임시 브랜치를 생성합니다.
           TEMP_BRANCH="temp-branch-$(date +%s)"
           git subtree split --prefix=src/constants/ondaji -b $TEMP_BRANCH
-
-          echo "콘솔 2: 생성된 subtree split 커밋: $(git rev-parse $TEMP_BRANCH)"
 
           # 원격에 등록할 브랜치 이름을 로컬 브랜치 이름과 동일하게 설정
           REMOTE_BRANCH="$LOCAL_BRANCH"
           echo "원격에 생성할 브랜치: $REMOTE_BRANCH"
 
-          echo "콘솔 3: 원격에 임시 브랜치 push (force 옵션 사용)"
+          # 원격에 임시 브랜치 push
+          # $TEMP_BRANCH 브랜치 내용을 원격 저장소의 $REMOTE_BRANCH 브랜치로 푸시
           git push ondaji-constants $TEMP_BRANCH:$REMOTE_BRANCH --force
 
-          # 작업 후 로컬 임시 브랜치 삭제 (선택사항)
+          # 작업 후 로컬 임시 브랜치 삭제 
           git branch -D $TEMP_BRANCH
 
           # 생성한 로컬 브랜치 이름을 output 변수로 설정하여 이후 단계에서 사용할 수 있도록 합니다.
@@ -85,38 +85,38 @@ jobs:
         if: steps.check_changes.outputs.changes == 'true'
         run: sudo apt-get update && sudo apt-get install -y gh
 
-      # 여기까지는 A 레포에서 실행됨.
-      # 이제 B 레포(altsoft5472344/ondaji_4gen_front_constants)를 클론하여 PR 생성 작업을 진행합니다.
-      - name: Checkout B repository
+      # 여기까지는 소비자 레포에서 실행됨.
+      # 이제 공통 모듈 레포(altsoft5472344/ondaji_4gen_front_constants)를 클론하여 PR 생성 작업을 진행합니다.
+      - name: Checkout constants repository
         if: steps.check_changes.outputs.changes == 'true'
         uses: actions/checkout@v3
         with:
           repository: altsoft5472344/ondaji_4gen_front_constants
-          token: ${{ secrets.ACCESS_TOKEN }} # B 레포 접근용 별도 토큰
+          token: ${{ secrets.ACCESS_TOKEN }}
           fetch-depth: 0
-          path: b-repo
+          path: constants-repo
 
-      - name: Set up Git in B repo
+      - name: Set up Git in constants repository
         if: steps.check_changes.outputs.changes == 'true'
-        working-directory: b-repo
+        working-directory: constants-repo
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Create Pull Request using GitHub CLI in B repo
+      - name: Create Pull Request using GitHub CLI in constants repository
         if: steps.check_changes.outputs.changes == 'true'
-        working-directory: b-repo
+        working-directory: constants-repo
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
           set -x  # 디버그 모드 활성화
           echo "현재 레포지토리: ${{ github.repository }}"
+
           git remote -v
           git branch -a
 
           # 이전 단계에서 생성한 브랜치 이름을 가져옵니다.
           PR_BRANCH="${{ steps.create_branch.outputs.local_branch }}"
-          echo "PR 대상 브랜치: $PR_BRANCH"
 
           git checkout main
           git pull
@@ -132,16 +132,14 @@ jobs:
             exit 0
           else
             COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
-            echo "전체 커밋 메시지: $COMMIT_MESSAGE"
+
+            # PR 타이틀 (첫 줄에서 (#숫자) 제거)
             COMMIT_TITLE=$(echo "$COMMIT_MESSAGE" | head -n 1 | sed -E 's/[[:space:]]*\(\#[0-9]+\)//g')
-            echo "PR 타이틀 (첫 줄에서 (#숫자) 제거): $COMMIT_TITLE"
             COMMIT_URL="${{ github.event.head_commit.url }}"
             COMMIT_AUTHOR="${{ github.event.head_commit.author.name }}"
             BODY="커밋 메시지: ${COMMIT_TITLE}
             커밋 URL: ${COMMIT_URL}
             커밋 작성자: @${COMMIT_AUTHOR}"
-            echo "PR 본문: $BODY"
-            # PR 생성 시에는 로컬 브랜치 이름만 사용 (원격 이름 제외)
             gh pr create --title "${COMMIT_TITLE}" \
                          --body "$BODY" \
                          --base main --head $PR_BRANCH
