@@ -101,9 +101,9 @@ jobs:
 
           git fetch ondaji-service $PR_BRANCH
 
-          CHANGED_FILES=$(git diff ondaji-service/main..$PR_BRANCH --name-only --)
+          CHANGED_FILES=$(git diff ondaji-service/main..ondaji-service/$PR_BRANCH --name-only --)
           echo "변경된 파일 목록: $CHANGED_FILES"
-          git log ondaji-service/main..$PR_BRANCH --oneline --graph
+          git log ondaji-service/main..ondaji-service/$PR_BRANCH --oneline --graph
 
           if [ -z "$CHANGED_FILES" ]; then
             echo "ondaji-service/main과 $PR_BRANCH 간에 변경된 파일이 없음."
