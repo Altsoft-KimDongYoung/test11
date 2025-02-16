@@ -70,7 +70,7 @@ jobs:
 
           git fetch origin main
 
-          CHANGED_FILES=$(git diff origin/main..$BRANCH --name-only | grep '^src/constants/ondaji/')
+          CHANGED_FILES=$(git diff origin/main..$BRANCH --name-only | grep '^src/constants/ondaji/' || true)
           echo "변경된 파일 목록: $CHANGED_FILES"
 
           if [ -z "$CHANGED_FILES" ]; then
