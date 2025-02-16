@@ -1,54 +1,118 @@
-name: Create PR in B repo from A repo
+name: Auto PR for ondaji service changes
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "src/service/ondaji/**"
+
+permissions:
+  contents: write
 
 jobs:
-  create-pr:
+  auto-pr-service:
     runs-on: ubuntu-latest
+
     steps:
-      # 1. B 레포를 클론 (A 레포의 워크플로우에서 다른 레포를 클론하려면 repository 옵션 사용)
-      - name: Checkout B repository
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          repository: altsoft5472344/ondaji_4gen_front_service
-          token: ${{ secrets.ACCESS_TOKEN }} # B 레포 접근을 위한 PAT (Personal Access Token)
-          path: b-repo
+          fetch-depth: 0
+          token: ${{ secrets.ACCESS_TOKEN }}
 
-      # 2. B 레포 디렉터리로 이동하여 Git 설정
-      - name: Configure Git in B repo
-        working-directory: b-repo
+      - name: Set up Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      # 3. B 레포에서 새로운 브랜치 생성 및 변경사항 커밋 (여기서는 예시로 README.md에 간단한 내용을 추가)
-      - name: Create new branch in B repo
-        working-directory: b-repo
+      - name: Add ondaji-service remote if not exists
         run: |
-          # 고유한 브랜치 이름 생성 (예: test8-타임스탬프)
-          BRANCH="test8-$(date +%s)"
-          echo "Creating branch $BRANCH"
-          git checkout -b $BRANCH
-          # 예시 변경사항: README.md 파일에 내용 추가 (실제 변경 사항을 적용하세요)
-          echo "자동 PR 테스트" >> README.md
-          git add README.md
-          git commit -m "Update README in branch $BRANCH"
+          if ! git remote | grep -q ondaji-service; then
+            git remote add ondaji-service https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/altsoft5472344/ondaji_4gen_front_service.git
+          fi
 
-      # 4. 새 브랜치를 원격(B 레포)에 push
-      - name: Push new branch to B repo
-        working-directory: b-repo
+      - name: Check for changes in ondaji-service
+        id: check_changes
         run: |
-          git push origin $BRANCH
+          if git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -q '^src/service/ondaji/'; then
+            echo "Detected file changes in src/service/ondaji."
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No file changes in src/service/ondaji."
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
 
-      # 5. GitHub CLI를 사용해 B 레포에 PR 생성 (HEAD: 새 브랜치, BASE: main)
-      - name: Create PR in B repo using GitHub CLI
-        working-directory: b-repo
+      - name: Create branch and push subtree if changes exist
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          echo "현재 레포지토리: ${{ github.repository }}"
+          git remote -v
+          git branch -a
+
+          # origin의 최신 main을 fetch 및 checkout
+          git fetch origin main
+          git checkout -B main origin/main
+          git log --oneline
+
+          # 고유한 브랜치 이름 생성 (예: auto-ondaji-service-타임스탬프)
+          LOCAL_BRANCH="auto-ondaji-service-$(date +%s)"
+          echo "Creating new local branch: $LOCAL_BRANCH"
+          git checkout -b $LOCAL_BRANCH
+
+          echo "콘솔 1: subtree split 시작"
+          TEMP_BRANCH="temp-branch-$(date +%s)"
+          git subtree split --prefix=src/service/ondaji -b $TEMP_BRANCH
+
+          echo "콘솔 2: 생성된 subtree split 커밋: $(git rev-parse $TEMP_BRANCH)"
+
+          # 원격에 등록할 브랜치 이름을 고유하게 생성 (예: auto-ondaji-service-타임스탬프)
+          REMOTE_BRANCH="$LOCAL_BRANCH"
+          echo "원격에 생성할 브랜치: $REMOTE_BRANCH"
+
+          echo "콘솔 3: 원격에 임시 브랜치 push (force 옵션 사용)"
+          git push ondaji-service $TEMP_BRANCH:$REMOTE_BRANCH --force
+
+          # 로컬 임시 브랜치 삭제
+          git branch -D $TEMP_BRANCH
+
+      - name: Install GitHub CLI
+        if: steps.check_changes.outputs.changes == 'true'
+        run: sudo apt-get update && sudo apt-get install -y gh
+
+      - name: Create Pull Request using GitHub CLI
+        if: steps.check_changes.outputs.changes == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
-          gh pr create --title "Update from A repo" \
-                       --body "자동 생성된 PR입니다. A 레포에서 변경 사항을 반영했습니다." \
-                       --base main --head $BRANCH
+          set -x
+          echo "현재 레포지토리: ${{ github.repository }}"
+          git remote -v
+          git branch -a
+
+          # PR 대상 브랜치 이름은 위에서 push한 REMOTE_BRANCH (예: auto-ondaji-service-타임스탬프)
+          PR_BRANCH="$REMOTE_BRANCH"
+          echo "PR 대상 브랜치: $PR_BRANCH"
+
+          git fetch ondaji-service main
+          CHANGED_FILES=$(git diff ondaji-service/main..$PR_BRANCH --name-only --)
+          echo "변경된 파일 목록: $CHANGED_FILES"
+          git log ondaji-service/main..$PR_BRANCH --oneline --graph
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "ondaji-service/main과 $PR_BRANCH 간에 변경된 파일이 없음."
+            exit 0
+          else
+            COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+            echo "전체 커밋 메시지: $COMMIT_MESSAGE"
+            COMMIT_TITLE=$(echo "$COMMIT_MESSAGE" | head -n 1 | sed -E 's/[[:space:]]*\(\#[0-9]+\)//g')
+            echo "PR 타이틀 (첫 줄에서 (#숫자) 제거): $COMMIT_TITLE"
+            COMMIT_URL="${{ github.event.head_commit.url }}"
+            COMMIT_AUTHOR="${{ github.event.head_commit.author.name }}"
+            BODY="커밋 메시지: ${COMMIT_TITLE}\n커밋 URL: ${COMMIT_URL}\n커밋 작성자: @${COMMIT_AUTHOR}"
+            echo "PR 본문: $BODY"
+            # PR 생성 시 원격 이름 없이 단순 브랜치 이름 사용
+            gh pr create --title "${COMMIT_TITLE}" \
+                         --body "$BODY" \
+                         --base main --head $PR_BRANCH
+          fi
