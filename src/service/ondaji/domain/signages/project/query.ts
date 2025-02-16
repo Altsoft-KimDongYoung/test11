@@ -77,7 +77,7 @@ export const useInfiniteQueryProjectList = <T = Project[]>(
   });
 };
 
-/** @SIGNAGE 사이니지 프로젝트에 등록할 수 있는 컨텐츠의 목록을 가져오는 훅 테스13*/
+/** @SIGNAGE 사이니지 프로젝트에 등록할 수 있는 컨텐츠의 목록을 가져오는 훅 테스15*/
 export const useInfiniteQueryContentListCanRegister = <T = ProjectCanRegisterContent[]>(
   params: Omit<ContentListCanRegisterParams, 'page' | 'size'>,
   options?: Partial<
