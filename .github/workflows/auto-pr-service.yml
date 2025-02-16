@@ -47,12 +47,43 @@ jobs:
       - name: Create branch and push subtree if changes exist
         if: steps.check_changes.outputs.changes == 'true'
         run: |
+
+
+          echo "현재 레포지토리: ${{ github.repository }}"
+          git remote -v
+
+          git branch -a
+
+          git fetch origin main
+
+          git checkout main
+          git log --oneline
+
           # 고유한 브랜치 이름 생성 (예: auto-ondaji-service-타임스탬프)
           BRANCH="auto-ondaji-service-$(date +%s)"
           echo "Creating branch $BRANCH"
-          git checkout -b $BRANCH
-          # --squash 옵션을 사용해 커밋 이력을 단순화합니다.
-          git subtree push --prefix=src/service/ondaji ondaji-service $BRANCH
+
+          echo "콘솔 1"
+          # 지정한 폴더(src/service/ondaji)에 대한 subtree split을 수행하여 임시 브랜치 생성
+          TEMP_BRANCH="temp-branch-name"
+          git subtree split --prefix=src/service/ondaji -b $TEMP_BRANCH
+
+          echo "콘솔 2"
+          # 생성된 subtree split 커밋 해시 확인
+          COMMIT_HASH=$(git rev-parse $TEMP_BRANCH)
+          echo "생성된 subtree split 커밋: $COMMIT_HASH"
+
+          echo "콘솔 3"
+          # 원격에 등록할 고유 브랜치 이름 생성 (예: auto-ondaji-service-타임스탬프)
+          NEW_BRANCH="auto-ondaji-service-$(date +%s)"
+          echo "원격에 생성할 브랜치: $NEW_BRANCH"
+
+          echo "콘솔 4"
+          # 임시 브랜치를 원격 저장소(ondaji-service)에 push (원격 브랜치명은 NEW_BRANCH로 설정)
+          git push ondaji-service $TEMP_BRANCH:$NEW_BRANCH --force
+
+          # 작업 후 로컬 임시 브랜치 삭제 (선택사항)
+          git branch -D $TEMP_BRANCH
 
       - name: Install GitHub CLI
         if: steps.check_changes.outputs.changes == 'true'
