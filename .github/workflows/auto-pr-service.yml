@@ -75,7 +75,7 @@ jobs:
 
           echo "콘솔 3"
           # 원격에 등록할 고유 브랜치 이름 생성 (예: auto-ondaji-service-타임스탬프)
-          NEW_BRANCH="test7"
+          NEW_BRANCH="test8"
           echo "원격에 생성할 브랜치: $NEW_BRANCH"
 
           echo "콘솔 4"
@@ -100,17 +100,17 @@ jobs:
           echo "현재 레포지토리: ${{ github.repository }}"
           git remote -v
 
-          BRANCH="test7"
+          BRANCH="test8"
           echo "현재 브랜치: $BRANCH"
 
           git fetch ondaji-service main
 
           git branch -a 
 
-          CHANGED_FILES=$(git diff ondaji-service/main..ondaji-service/test7 --name-only --)
+          CHANGED_FILES=$(git diff ondaji-service/main..ondaji-service/test8 --name-only --)
           echo "변경된 파일 목록: $CHANGED_FILES"
 
-          git log ondaji-service/main..ondaji-service/test7 --oneline --graph
+          git log ondaji-service/main..ondaji-service/test8 --oneline --graph
 
           if [ -z "$CHANGED_FILES" ]; then
             echo "ondaji-service/main과 $BRANCH 간에 내 변경된 파일이 없음."
@@ -130,5 +130,5 @@ jobs:
             
             gh pr create --title "${COMMIT_TITLE}" \
                         --body "$BODY" \
-                        --base main --head $BRANCH
+                        --base ondaji-service/main --head ondaji-service/$BRANCH
           fi
