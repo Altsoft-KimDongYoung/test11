@@ -220,20 +220,4 @@ export const API_URL = {
   TUS: {
     UPLOAD: 'tus/upload',
   },
-  TEST: {
-    A: 'A',
-    B: 'B',
-    C: 'C',
-    D: 'D',
-    E: 'E',
-    F: 'F',
-  },
-  ONDAJI: {
-    CLIENT_A: 'A',
-    CLIENT_B: 'B',
-    CLIENT_C: 'C',
-    CLIENT_D: 'D',
-    CLIENT_E: 'E',
-    CLIENT_F: 'F',
-  },
 } as const;
