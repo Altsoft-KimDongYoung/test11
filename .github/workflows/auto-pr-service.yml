@@ -105,6 +105,8 @@ jobs:
 
           git fetch ondaji-service main
 
+          git branch -a 
+
           CHANGED_FILES=$(git diff main..$BRANCH --name-only --)
           echo "변경된 파일 목록: $CHANGED_FILES"
 
