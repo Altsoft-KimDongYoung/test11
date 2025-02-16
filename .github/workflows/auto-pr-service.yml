@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: altsoft5472344/ondaji_4gen_front_service
-          token: ${{ secrets.B_ACCESS_TOKEN }} # B 레포 접근용 별도 토큰
+          token: ${{ secrets.ACCESS_TOKEN }} # B 레포 접근용 별도 토큰
           fetch-depth: 0
           path: b-repo
 
@@ -66,7 +66,7 @@ jobs:
         if: steps.check_changes.outputs.changes == 'true'
         working-directory: b-repo
         env:
-          GITHUB_TOKEN: ${{ secrets.B_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
           set -x  # 디버그 모드 활성화
           echo "현재 레포지토리 (B repo):"
