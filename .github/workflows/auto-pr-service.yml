@@ -99,7 +99,7 @@ jobs:
           PR_BRANCH="${{ steps.create_branch.outputs.local_branch }}"
           echo "PR 대상 브랜치: $PR_BRANCH"
 
-          git fetch ondaji-service $PR_BRANCH
+          git fetch ondaji-service
 
           CHANGED_FILES=$(git diff ondaji-service/main..ondaji-service/$PR_BRANCH --name-only --)
           echo "변경된 파일 목록: $CHANGED_FILES"
