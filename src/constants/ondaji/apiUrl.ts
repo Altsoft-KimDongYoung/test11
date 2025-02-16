@@ -221,6 +221,6 @@ export const API_URL = {
     UPLOAD: 'tus/upload',
   },
   TEST: {
-    TEST: 'test4',
+    TEST: 'test5',
   },
 } as const;
