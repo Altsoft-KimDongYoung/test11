@@ -1,0 +1,10 @@
+{
+  "name": "ondaji_4gen_front_constants",
+  "version": "1.0.0",
+  "description": "온닫이에서 사용되는 상수",
+  "main": "index.js",
+  "scripts": {},
+  "author": "알트소프트",
+  "license": "ISC",
+  "dependencies": {}
+}
