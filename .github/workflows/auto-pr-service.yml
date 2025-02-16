@@ -29,18 +29,18 @@ jobs:
       - name: Add ondaji-service remote if not exists
         run: |
           if ! git remote | grep -q ondaji-service; then
-            git remote add ondaji-service https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/altsoft5472344/ondaji_4gen_front_constants.git
+            git remote add ondaji-service https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/altsoft5472344/ondaji_4gen_front_service.git
           fi
 
       - name: Check for changes in ondaji-service
         id: check_changes
         run: |
           # 이전 commit과 현재 commit 간의 변경사항을 확인합니다.
-          if git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -q '^src/constants/ondaji/'; then
-            echo "Detected file changes in src/constants/ondaji."
+          if git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -q '^src/service/ondaji/'; then
+            echo "Detected file changes in src/service/ondaji."
             echo "changes=true" >> $GITHUB_OUTPUT
           else
-            echo "No file changes in src/constants/ondaji."
+            echo "No file changes in src/service/ondaji."
             echo "changes=false" >> $GITHUB_OUTPUT
           fi
 
@@ -52,7 +52,7 @@ jobs:
           echo "Creating branch $BRANCH"
           git checkout -b $BRANCH
           # --squash 옵션을 사용해 커밋 이력을 단순화합니다.
-          git subtree push --prefix=src/constants/ondaji ondaji-service $BRANCH
+          git subtree push --prefix=src/service/ondaji ondaji-service $BRANCH
 
       - name: Install GitHub CLI
         if: steps.check_changes.outputs.changes == 'true'
@@ -70,11 +70,11 @@ jobs:
 
           git fetch origin main
 
-          CHANGED_FILES=$(git diff origin/main..$BRANCH --name-only | grep '^src/constants/ondaji/')
+          CHANGED_FILES=$(git diff origin/main..$BRANCH --name-only | grep '^src/service/ondaji/')
           echo "변경된 파일 목록: $CHANGED_FILES"
 
           if [ -z "$CHANGED_FILES" ]; then
-            echo "main과 $BRANCH 간에 src/constants/ondaji 내 변경된 파일이 없음."
+            echo "main과 $BRANCH 간에 src/service/ondaji 내 변경된 파일이 없음."
             exit 0
           else
             COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
