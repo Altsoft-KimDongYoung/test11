@@ -77,7 +77,7 @@ export const useInfiniteQueryProjectList = <T = Project[]>(
   });
 };
 
-/** @SIGNAGE 사이니지 프로젝트에 등록할 수 있는 컨텐츠의 목록을 가져오는 훅 테스트 */
+/** @SIGNAGE 사이니지 프로젝트에 등록할 수 있는 컨텐츠의 목록을 가져오는 훅 테스트1 */
 export const useInfiniteQueryContentListCanRegister = <T = ProjectCanRegisterContent[]>(
   params: Omit<ContentListCanRegisterParams, 'page' | 'size'>,
   options?: Partial<
