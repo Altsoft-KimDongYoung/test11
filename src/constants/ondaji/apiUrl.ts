@@ -223,5 +223,6 @@ export const API_URL = {
   TEST: {
     A: 'A',
     MOCK: 'mock',
+    TEST: 'test',
   },
 } as const;
