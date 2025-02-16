@@ -68,13 +68,13 @@ jobs:
           BRANCH=$(git rev-parse --abbrev-ref HEAD)
           echo "현재 브랜치: $BRANCH"
 
-          git fetch origin main
+          git fetch ondaji-service main
 
-          CHANGED_FILES=$(git diff origin/main..$BRANCH --name-only)
+          CHANGED_FILES=$(git diff ondaji-service/main..$BRANCH --name-only)
           echo "변경된 파일 목록: $CHANGED_FILES"
 
           if [ -z "$CHANGED_FILES" ]; then
-            echo "main과 $BRANCH 간에 내 변경된 파일이 없음."
+            echo "ondaji-service/main과 $BRANCH 간에 내 변경된 파일이 없음."
             exit 0
           else
             COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
