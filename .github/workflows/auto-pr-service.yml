@@ -65,6 +65,10 @@ jobs:
         run: |
           set -x  # 디버그 모드 활성화 (실행되는 명령어들이 출력됩니다)
 
+
+          echo "현재 레포지토리: ${{ github.repository }}"
+          git remote -v
+
           BRANCH=$(git rev-parse --abbrev-ref HEAD)
           echo "현재 브랜치: $BRANCH"
 
