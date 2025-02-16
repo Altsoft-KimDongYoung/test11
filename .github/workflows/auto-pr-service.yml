@@ -124,8 +124,6 @@ jobs:
           git pull
 
           CHANGED_FILES=$(git diff main..$PR_BRANCH --name-only --)
-          echo "변경된 파일 목록: $CHANGED_FILES"
-          git log main..$PR_BRANCH --oneline --graph
 
           if [ -z "$CHANGED_FILES" ]; then
             echo "main과 $PR_BRANCH 간에 변경된 파일이 없음."
