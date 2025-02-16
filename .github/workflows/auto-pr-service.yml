@@ -75,7 +75,7 @@ jobs:
 
           echo "콘솔 3"
           # 원격에 등록할 고유 브랜치 이름 생성 (예: auto-ondaji-service-타임스탬프)
-          NEW_BRANCH="test/test"
+          NEW_BRANCH="test1"
           echo "원격에 생성할 브랜치: $NEW_BRANCH"
 
           echo "콘솔 4"
@@ -100,7 +100,7 @@ jobs:
           echo "현재 레포지토리: ${{ github.repository }}"
           git remote -v
 
-          BRANCH="test/test"
+          BRANCH="test1"
           echo "현재 브랜치: $BRANCH"
 
           git fetch ondaji-service main
