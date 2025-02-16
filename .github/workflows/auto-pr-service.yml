@@ -3,7 +3,7 @@ name: Create PR in B repo from A repo
 on:
   push:
     branches:
-      - test/gitAction
+      - main
 
 jobs:
   create-pr:
