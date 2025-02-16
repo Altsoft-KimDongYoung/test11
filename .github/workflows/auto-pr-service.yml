@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  auto-pr:
+  auto-pr-service:
     runs-on: ubuntu-latest
 
     steps:
@@ -47,8 +47,8 @@ jobs:
       - name: Create branch and push subtree if changes exist
         if: steps.check_changes.outputs.changes == 'true'
         run: |
-          # 고유한 브랜치 이름 생성 (예: auto ondaji-service-타임스탬프)
-          BRANCH="auto ondaji-service-$(date +%s)"
+          # 고유한 브랜치 이름 생성 (예: auto-ondaji-service-타임스탬프)
+          BRANCH="auto-ondaji-service-$(date +%s)"
           echo "Creating branch $BRANCH"
           git checkout -b $BRANCH
           # --squash 옵션을 사용해 커밋 이력을 단순화합니다.
